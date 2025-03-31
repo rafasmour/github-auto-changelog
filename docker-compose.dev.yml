@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: changelog_api
+    env_file: ".env"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.changelog_api.rule=Host(`changelog.${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.routers.changelog_api.entrypoints=websecure
+      - traefik.http.routers.changelog_api.tls=true
+    networks:
+      - webgateway
+    command: "npm run start:dev"
+    volumes:
+      - ./api:/api
+    working_dir: /api
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: changelog_app
+    env_file: ".env"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.changelog_app.rule=Host(`changelog.${DOMAIN}`)
+      - traefik.http.routers.changelog_app.entrypoints=websecure
+      - traefik.http.routers.changelog_app.tls=true
+    networks:
+      - webgateway
+    command: "npm run dev"
+    volumes:
+      - ./app:/app
+    working_dir: /app
+
+
+networks:
+  webgateway:
+    name: ${NETWORK}
+    external: true
