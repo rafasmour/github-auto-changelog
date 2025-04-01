@@ -7,12 +7,12 @@ services:
     env_file: ".env"
     labels:
       - traefik.enable=true
-      - traefik.http.routers.changelog_api.rule=Host(`changelog.${DOMAIN}`) && Prefix(`/api`)
+      - traefik.http.routers.changelog_api.rule=Host(`changelog.${DOMAIN}`) && PathPrefix(`/api`)
       - traefik.http.routers.changelog_api.entrypoints=websecure
       - traefik.http.routers.changelog_api.tls=true
     networks:
       - webgateway
-    command: "npm run build && npm run start:prod"
+    command: "sh -c \"npm run build && npm run start:prod\""
     volumes:
       - ./api:/api
     working_dir: /api
@@ -30,7 +30,7 @@ services:
       - traefik.http.routers.changelog_app.tls=true
     networks:
       - webgateway
-    command: "npm run build && npm run preview"
+    command: "sh -c \"npm run build && npm run serve\""
     volumes:
       - ./app:/app
     working_dir: /app
