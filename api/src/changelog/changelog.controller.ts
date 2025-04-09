@@ -11,4 +11,9 @@ export class ChangelogController {
     async getChangelog(@Body('gitURL') gitURL: string) {
         return this.changelogService.fetchChangelog(gitURL);
     }
+
+    @Get('status')
+    async getStatus() {
+        return this.changelogService.getStatus();
+    }
 }

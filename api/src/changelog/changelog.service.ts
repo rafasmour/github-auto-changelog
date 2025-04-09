@@ -6,15 +6,23 @@ import {commitsPerRelease} from "../gitReader/types/gitReader.types";
 
 @Injectable()
 export class ChangelogService {
-    protected status: string;
+    protected status: string = "available";
     constructor(
         private readonly gitReaderProvider: GitReaderProvider,
         private readonly mdTransformer: MarkdownTransformerProvider
     ){
 
     }
+    async getStatus(): Promise<string> {
+        return this.status;
+    }
     async fetchChangelog(gitURL: string): Promise<string> {
+        this.status = "Fetching changelog";
         const [gitRepoName, gitHistory]: [string, commitsPerRelease] = await this.gitReaderProvider.readGitHistory(gitURL);
-        return await this.mdTransformer.gitHistoryToMarkDown(gitRepoName, gitHistory);
+        this.status = "Transforming changelog";
+        const changelog:string = await this.mdTransformer.gitHistoryToMarkDown(gitRepoName, gitHistory);
+        this.status = "available";
+        return changelog;
+
     }
 }
