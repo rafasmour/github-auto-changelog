@@ -7,7 +7,7 @@ import * as fs from "node:fs";
 import {commitsPerRelease} from "./types/gitReader.types";
 import {Cron} from "@nestjs/schedule";
 import debug from 'debug'
-debug.enable('simple-git, simple-git:*')
+// debug.enable('simple-git, simple-git:*')
 @Injectable()
 export class GitReaderProvider {
     constructor(
@@ -21,49 +21,50 @@ export class GitReaderProvider {
         await this.dirCleaner.cleanDir(this.gitReaderConsts.getGitReposDir());
     }
     protected async fetchRepository(gitURL: string, gitRepoName: string): Promise<SimpleGit> {
+        const gitReposDir: string = this.gitReaderConsts.getGitReposDir();
+        const gitReposDirCap: number = this.gitReaderConsts.getGitReposDirCap();
+        const gitRepoDir: string = path.join(
+            this.gitReaderConsts.getGitReposDir(),
+            `/${gitRepoName}`
+        )
         try {
-            const gitReposDir: string = this.gitReaderConsts.getGitReposDir();
-            const gitReposDirCap: number = this.gitReaderConsts.getGitReposDirCap();
+
             const enoughSpace: boolean = await this.dirCleaner.checkAndClean(gitReposDir, gitReposDirCap);
             if(!enoughSpace){
                 throw new Error('Something went wrong')
             }
 
-            const gitRepoDir: string = path.join(
-                this.gitReaderConsts.getGitReposDir(),
-                `/${gitRepoName}`
-            )
+
 
             console.log(gitRepoDir)
-            const git: SimpleGit = simpleGit({
-                baseDir: this.gitReaderConsts.getGitReposDir(),
-                binary: 'git',
-                trimmed: false
-            })
-            if(!fs.existsSync(gitRepoDir)){
-                console.log('cloning')
 
-                 const cloned: string = await git.clone(gitURL);
-                console.log(cloned);
-                console.log('cloned')
+            if(!fs.existsSync(gitRepoDir)){
+                const git: SimpleGit = simpleGit({
+                    baseDir: this.gitReaderConsts.getGitReposDir(),
+                    binary: 'git',
+                    trimmed: false
+                })
+                console.log('cloning')
+                await git.clone(gitURL);
                 return simpleGit({
                     baseDir: gitRepoDir,
                     binary: 'git',
                     trimmed: false,
                 })
             }
-            console.log('fetching')
-
-            const fetched: FetchResult = await git.fetch();
-            console.log(fetched);
-
-            return simpleGit({
+            const git:SimpleGit = simpleGit({
                 baseDir: gitRepoDir,
                 binary: 'git',
-                trimmed: false,
-            });
+                trimmed: false
+            })
+            console.log('fetching')
+            await git.fetch();
+            return git
         } catch (e) {
             console.log(e)
+            if(fs.existsSync(gitRepoDir)){
+                // this.dirCleaner.cleanDir(gitRepoDir);
+            }
             throw(e)
         }
     }
@@ -120,7 +121,6 @@ export class GitReaderProvider {
                 for(let j = 0; j < gitLog[i].all.length; j++) {
                     commitMessages.push(gitLog[i].all[j].message);
                 }
-                console.log(gitLog[i].latest?.refs)
                 gitLogPerRelease.push({
                     release: gitLog[i].latest?.refs ? gitLog[i].latest?.refs : 'HEAD',
                     commitMessages: commitMessages

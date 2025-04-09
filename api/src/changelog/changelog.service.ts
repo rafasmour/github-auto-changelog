@@ -15,7 +15,6 @@ export class ChangelogService {
     }
     async fetchChangelog(gitURL: string): Promise<string> {
         const [gitRepoName, gitHistory]: [string, commitsPerRelease] = await this.gitReaderProvider.readGitHistory(gitURL);
-        console.log(gitHistory);
         return await this.mdTransformer.gitHistoryToMarkDown(gitRepoName, gitHistory);
     }
 }

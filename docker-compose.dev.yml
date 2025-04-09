@@ -34,6 +34,9 @@ services:
       - ./app:/app
     working_dir: /app
 
+volumes:
+  repos:
+
 
 networks:
   webgateway:

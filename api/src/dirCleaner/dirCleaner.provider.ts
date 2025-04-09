@@ -7,11 +7,20 @@ export class DirCleanerProvider {
     constructor(){
 
     }
-    // threshold is in bytes
+    async getFreeSpaceInMB(): Promise<number> {
+        try {
+            const root= fs.statfsSync('/');
+            const freeSpace: number = root.bfree * root.bsize / (1024 * 1024);
+            return freeSpace
+        } catch (e) {
+            throw(e)
+        }
+    }
+    // threshold is in MegaBytes
     async checkAndClean(dirPath: string, threshold: number): Promise<boolean> {
         try {
-            const dirSize: number = fs.statSync(dirPath).size / (1024 * 1024);
-            const freeSpace: number = fs.statSync('/').size / (1024 * 1024);
+            const dirSize: number = fs.statSync('/repos').size / (1024 * 1024);
+            const freeSpace: number = await this.getFreeSpaceInMB();
             if(freeSpace < threshold) {
                 await this.cleanDir(dirPath);
                 return true;
@@ -22,7 +31,7 @@ export class DirCleanerProvider {
                 })
                 for (const file of dir) {
                     const filePath = path.join(dirPath, file);
-                    if(fs.statSync(dirPath).size > threshold * 0.8) {
+                    if(fs.statSync(dirPath).size > threshold * 0.5) {
                         if (fs.statSync(filePath).isDirectory()) {
                             await this.cleanDir(filePath);
                         } else {
@@ -41,14 +50,28 @@ export class DirCleanerProvider {
     }
 
     async cleanDir(dirPath:string): Promise<void> {
-        const dir = fs.readdirSync(dirPath);
-        for (const file of dir) {
-            const filePath = path.join(dirPath, file);
-            if (fs.statSync(filePath).isDirectory()) {
-                await this.cleanDir(filePath);
-            } else {
-                fs.unlinkSync(filePath);
-            }
+        try {
+            const dir = fs.readdirSync(dirPath);
+            dir.forEach((file) => {
+                const filePath = path.join(dirPath, file);
+                if (fs.statSync(filePath).isDirectory()) {
+                    this.removeDir(filePath);
+                } else {
+                    fs.unlinkSync(filePath);
+                }
+            })
+        } catch (e) {
+            console.log(e)
+            throw e
+        }
+    }
+
+    async removeDir(dirPath:string): Promise<void> {
+        try {
+            fs.rmSync(dirPath, { recursive: true, force: true });
+        } catch (e) {
+            console.log(e)
+            throw e
         }
     }
 }
