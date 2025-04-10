@@ -13,6 +13,7 @@
 !api/tsconfig.build.json
 !api/tsconfig.json
 
+!app
 !app/src/**/*
 !app/.gitignore
 !app/eslint.config.js
