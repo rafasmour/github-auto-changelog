@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+* {
+ @apply font-mono transition-all duration-100 ease-in;
+}
 @theme {
   --color-background: #1A1A1D;
   --color-background-sec: #3B1C32;
