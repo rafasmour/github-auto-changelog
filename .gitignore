@@ -14,6 +14,7 @@
 !api/tsconfig.json
 
 !app
+!app/src
 !app/src/**/*
 !app/.gitignore
 !app/eslint.config.js
