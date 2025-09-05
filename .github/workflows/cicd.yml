@@ -1,0 +1,60 @@
+name: deploy
+
+"on":
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Alpine
+        uses: jirutka/setup-alpine@v1
+        with:
+          branch: "v3.19"
+          packages: >
+            openssh
+
+      - name: Verify Alpine Release
+        run: cat /etc/alpine-release
+        shell: alpine.sh {0}
+
+      - uses: ./.github/actions/ssh
+        with:
+          host: ${{ secrets.VPS_IP }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Cache ssh key passphrase & Run Deployment
+        env:
+          SSH_PASSPHRASE: ${{ secrets.DEPLOY_SSH_PASSPHRASE }}
+          USER: ${{ secrets.USER }}
+          VPS_IP: ${{ secrets.VPS_IP }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+          NETWORK: ${{ secrets.NETWORK }}
+        shell: alpine.sh --root {0}
+        run: |
+          eval "$(ssh-agent -s)"
+          echo -e '#!/bin/sh\necho "$SSH_PASSPHRASE"' > ./askpass.sh
+          chmod +x ./askpass.sh
+          export SSH_ASKPASS=./askpass.sh
+          export DISPLAY=:0
+          setsid ssh-add /home/runner/.ssh/id_rsa < /dev/null
+          ssh -o StrictHostKeyChecking=no -v ${USER}@${VPS_IP} \
+          "DOMAIN='${DOMAIN}' NETWORK='${NETWORK}' bash -s" << 'EOF'
+          set -x
+          cd /home/${USER}/ || exit 1
+          if [ ! -d "github-auto-changelog" ]; then
+          git clone https://github.com/rafasmour/github-auto-changelog.git|| exit 1
+          fi
+          cd traefik || exit 1
+          git pull || exit 1
+          rm .env
+          touch .env
+          echo "DOMAIN=${DOMAIN}" >> .env
+          echo "NETWORK=${NETWORK}" >> .env
+          docker compose -f docker-compose.prod.yml down --remove-orphans || exit 1
+          docker compose -f docker-compose.prod.yml up -d --build --force-recreate || exit 1
+          EOF
