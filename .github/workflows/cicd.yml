@@ -17,6 +17,8 @@ jobs:
           branch: "v3.19"
           packages: >
             openssh
+            nodejs
+            npm
 
       - name: Verify Alpine Release
         run: cat /etc/alpine-release
