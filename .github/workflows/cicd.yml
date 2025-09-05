@@ -55,6 +55,11 @@ jobs:
           touch .env
           echo "DOMAIN=${DOMAIN}" >> .env
           echo "NETWORK=${NETWORK}" >> .env
+          cd api || exit 1
+          npm install || exit 1
+          cd ../app || exit 1
+          npm install || exit 1
+          cd .. || exit 1
           docker compose -f docker-compose.prod.yml down --remove-orphans || exit 1
           docker compose -f docker-compose.prod.yml up -d --build --force-recreate || exit 1
           EOF
