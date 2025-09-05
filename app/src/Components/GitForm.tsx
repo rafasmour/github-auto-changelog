@@ -1,14 +1,11 @@
 import * as React from "react";
 import {FormEvent, useState} from "react";
 import {useGitContext} from "../Context/GitContext.tsx";
-import {useFetch} from "../Context/FetchContext.tsx";
-
 const GitForm: React.FC = () => {
     const { fetchChangelog, isFetching, error } = useGitContext();
     const [gitURL, setGitURL] = useState<string>("");
     const submitForm = async (e: FormEvent<HTMLFormElement>)=>  {
         e.preventDefault();
-        const gitURL: string = e.target[0].value;
         fetchChangelog(gitURL);
         setGitURL("");
     }

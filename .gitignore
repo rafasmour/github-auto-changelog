@@ -16,6 +16,7 @@
 !api/tsconfig.build.json
 !api/tsconfig.json
 !api/Dockerfile
+!api/.dockerignore
 
 !app
 !app/src
@@ -30,7 +31,7 @@
 !app/tsconfig.node.json
 !app/vite.config.ts
 !app/Dockerfile
-
+!app/.dockerignore
 
 !.gitignore
 !docker-compose.dev.yml

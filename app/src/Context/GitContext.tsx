@@ -1,5 +1,5 @@
 import {createContext, useContext, useState, ReactNode} from "react";
-import axios, {AxiosError, AxiosResponse} from "axios";
+import axios, {AxiosResponse} from "axios";
 
 type GitContextType = {
     changelog: string;
@@ -38,7 +38,7 @@ export const GitContextProvider = ({children}: GitContextProviderProps) => {
                 setChangelog(data);
                 setShowEditor(true);
             }
-        } catch (e: AxiosError) {
+        } catch (e) {
             console.error(e)
             if (axios.isAxiosError(e)) {
                 const response = await e.response;

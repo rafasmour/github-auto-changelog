@@ -1,6 +1,4 @@
 import {useGitContext} from "../Context/GitContext.tsx";
-import {useFetch} from "../Context/FetchContext.tsx";
-
 
 const DownloadChangelog = () => {
     const { changelog, setChangelog } = useGitContext();

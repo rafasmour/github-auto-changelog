@@ -12,6 +12,3 @@ RUN npm ci
 COPY . .
 
 EXPOSE 80
-
-# Set default command (can be overridden by docker-compose)
-CMD ["npm", "run", "serve"]
