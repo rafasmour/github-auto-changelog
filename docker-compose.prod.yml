@@ -10,6 +10,7 @@ services:
       - traefik.http.routers.changelog_api.rule=Host(`changelog.${DOMAIN}`) && PathPrefix(`/api`)
       - traefik.http.routers.changelog_api.entrypoints=websecure
       - traefik.http.routers.changelog_api.tls=true
+      - traefik.http.routers.changelog_api.tls.certresolver=myresolver
     networks:
       - webgateway
     command: "sh -c \"npm run build && npm run start:prod\""
@@ -28,6 +29,7 @@ services:
       - traefik.http.routers.changelog_app.rule=Host(`changelog.${DOMAIN}`)
       - traefik.http.routers.changelog_app.entrypoints=websecure
       - traefik.http.routers.changelog_app.tls=true
+      - traefik.http.routers.changelog_app.tls.certresolver=myresolver
     networks:
       - webgateway
     command: "sh -c \"npm run build && npm run serve\""
