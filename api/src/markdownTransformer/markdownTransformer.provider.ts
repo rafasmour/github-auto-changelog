@@ -36,22 +36,23 @@ export class MarkdownTransformerProvider {
     async gitHistoryToMarkDown(gitRepoName: string, history: commitsPerRelease): Promise<string> {
         let markdown: string = `# ${gitRepoName} Changelog\n\n`;
 
-        history.forEach((release: {release: string | undefined; commitMessages: string[]}) => {
-            markdown += `## ${release?.release?.replace("tag: ", "v")}\n\n`;
+        history.forEach((release: { release: string | undefined; commitMessages: string[] }) => {
+            markdown += `## ${release?.release?.replace("tag: ", "")}\n\n`;
 
             const commitCategories: commitCategories = this.categorizeCommitMessages(release.commitMessages)
-            Object.entries(commitCategories).forEach(([category, commits] : [string, string[]]) => {
-                if(commits.length > 0){
+            Object.entries(commitCategories).forEach(([category, commits]: [string, string[]]) => {
+                if (commits.length > 0) {
                     markdown += `### ${category}\n\n`;
                 }
                 commits.forEach((commit: string) => {
                     markdown += `- ${commit}\n`;
                 })
-                if(commits.length > 0){
+                if (commits.length > 0) {
                     markdown += `\n`;
                 }
             })
         })
-        return markdown
+        // strip html tags for xss attacks
+        return markdown.replace(/<\/?[^>]+(>|$)/g, "");
     }
 }

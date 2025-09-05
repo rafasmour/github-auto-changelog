@@ -1,5 +1,8 @@
 *
 
+!.github
+!.github/**/*
+
 !api
 !api/src
 !api/src/**/*
@@ -28,6 +31,6 @@
 
 !.gitignore
 !docker-compose.dev.yml
-!docker-compose.yml
+!docker-compose.prod.yml
 !LICENSE
 !README.md

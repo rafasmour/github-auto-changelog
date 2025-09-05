@@ -1,7 +1,7 @@
 @import "tailwindcss";
-
+@plugin "@tailwindcss/typography";
 * {
- @apply font-mono transition-all duration-100 ease-in;
+ @apply text-primary font-mono transition-all duration-300 ease-in;
 }
 @theme {
   --color-background: #1A1A1D;
@@ -9,4 +9,15 @@
   --color-secondary: #6A1E55;
   --color-accent: #A64D79;
   --color-primary: #F5F5F5;
+}
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }

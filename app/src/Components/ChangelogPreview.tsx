@@ -1,31 +1,15 @@
-import { useGitContext} from "../Context/GitContext.tsx";
+import {useGitContext} from "../Context/GitContext.tsx";
 import Markdown from "react-markdown";
-import {useState} from "react";
-const ChangelogPreview = () => {
-   const { changelog } = useGitContext();
-   const [preview, setPreview] = useState<boolean>(false);
-   const [buttonText, setButtonText] = useState<string>("Preview");
-   return (
-       <>
-           <div>
-               <button onClick={() => {
-                    setPreview(!preview);
-                    setButtonText(preview ? "Preview" : "Raw");
-               }} className={ `${changelog ? 'block' :  'hidden' } bg-background-sec p-2 text-xl rounded-t-xl`}>{buttonText}</button>
-           </div>
-           <div className={`w-[70vw] max-h-96 flex flex-row bg-background-sec overflow-auto p-4 text-primary prose lg:prose-xl background-sec rounded-md`}>
-               <div className={`${!preview ? "block" : "hidden"}`}>
-                   {changelog}
-               </div>
-               <div className={`${preview ? "block" : "hidden"}`}>
-                   <Markdown>
-                       {changelog}
-                   </Markdown>
-               </div>
-           </div>
-       </>
+import remarkGfm from "remark-gfm";
 
-   );
+const ChangelogPreview = () => {
+    const {changelog} = useGitContext();
+    return (
+        <div className={`w-full max-h-80 scroll  max-w-2xl p-4 overflow-hidden mx-auto my-6 prose prose-sm border-4 border-accent rounded-sm   ${changelog ? 'opacity-100' : 'opacity-0'} overflow-y-auto`}
+        >
+            <Markdown skipHtml remarkPlugins={[remarkGfm]}>{changelog}</Markdown>
+        </div>
+    );
 }
 
 export default ChangelogPreview;

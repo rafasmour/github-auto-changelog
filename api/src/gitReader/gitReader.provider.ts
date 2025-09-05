@@ -63,7 +63,7 @@ export class GitReaderProvider {
         } catch (e) {
             console.log(e)
             if(fs.existsSync(gitRepoDir)){
-                // this.dirCleaner.cleanDir(gitRepoDir);
+                this.dirCleaner.cleanDir(gitRepoDir);
             }
             throw(e)
         }

@@ -1,14 +1,36 @@
 import * as React from "react";
+import {FormEvent, useState} from "react";
+import {useGitContext} from "../Context/GitContext.tsx";
+import {useFetch} from "../Context/FetchContext.tsx";
 
 const GitForm: React.FC = () => {
-    return (
-        <form className="flex flex-col items-center justify-center h-screen hover:shadow-accent hover:shadow-2xl">
-            <legend className="text-3xl text-primary mb-10 text-shadow-lg text-shadow-">Git Auto Changelog</legend>
-            <div className="lex flex-col items-center justify-center">
-                <input type="text" className=" w-100 px-2 py-2 bg-secondary  radius focus:ring-accent focus:ring-2 focus:outline-none focus:ring-l-0"/>
-                <input type="submit"  />
-            </div>
+    const { fetchChangelog, isFetching, error } = useGitContext();
+    const [gitURL, setGitURL] = useState<string>("");
+    const submitForm = async (e: FormEvent<HTMLFormElement>)=>  {
+        e.preventDefault();
+        const gitURL: string = e.target[0].value;
+        fetchChangelog(gitURL);
+        setGitURL("");
+    }
 
+    return (
+        <form onSubmit={submitForm} className={` p-4 rounded-md flex flex-col items-center justify-center h-40  focus-within:ring-3 shadow-accent focus-within:shadow-md ring-accent  focus:ring bg-transparent opacity-90  `}>
+            <legend className="text-3xl text-primary mb-10 text-shadow-lg">Git Auto Changelog</legend>
+            <div className="flex flex-row items-center justify-center  rounded-xl  shadow-secondary shadow-md focus-within:shadow-lg">
+                <input disabled={isFetching} type="text" value={gitURL} onChange={(e) => setGitURL(e.target.value)} placeholder="Insert Git URL..." className={` ${isFetching ? "cursor-not-allowed" : ""} text-primary  placeholder-accent w-100 p-3 mr-0.5 rounded-l-md  focus:ring-accent focus:ring-2 outline-none border-none`}/>
+                <button
+                    type="submit"
+                    disabled={isFetching}
+                    className={` ${isFetching ? "cursor-not-allowed" : ""} p-3 bg-background-sec flex items-center justify-center text-primary rounded-r-md focus:outline-0 border-accent border-r-transparent focus:border-2 focus:border-l-transparent active:text-shadow-md text-shadow-accent cursor-pointer hover:bg-accent focus:ring-l-0`}
+                >
+                    {isFetching ? (
+                        <span className="inline-block w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                    ) : (
+                        "Fetch"
+                    )}
+                </button>
+            </div>
+            {error && <p className="text-red-500 animate-pulse mt-2">{error}</p>}
         </form>
     );
 }
