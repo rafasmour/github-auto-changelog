@@ -57,6 +57,9 @@ jobs:
           touch .env
           echo "DOMAIN=${DOMAIN}" >> .env
           echo "NETWORK=${NETWORK}" >> .env
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+          \. "$HOME/.nvm/nvm.sh"
+          nvm install 22
           cd api || exit 1
           npm install || exit 1
           cd ../app || exit 1
