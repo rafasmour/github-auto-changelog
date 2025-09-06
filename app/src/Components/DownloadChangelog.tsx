@@ -16,7 +16,7 @@ const DownloadChangelog = () => {
     }
     return changelog && (
         <button onClick={() => download()}
-        className={`${changelog ? "block" : "hidden"} p-4 bg-background-sec rounded-lg cursor-pointer focus:outline-none focus:ring-2 ring-accent hover:bg-accent`}
+        className={`${changelog ? "block" : "hidden"} p-5 text-2xl font-bold bg-background-sec rounded-lg cursor-pointer focus:outline-none focus:ring-2 ring-accent hover:bg-accent`}
         >Download</button>
     )
 }
