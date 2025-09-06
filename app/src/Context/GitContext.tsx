@@ -34,7 +34,6 @@ export const GitContextProvider = ({children}: GitContextProviderProps) => {
                     gitURL
                 })
                 const data = await response.data;
-                console.log(data)
                 setChangelog(data);
                 setShowEditor(true);
             }
