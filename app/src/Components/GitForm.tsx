@@ -13,7 +13,7 @@ const GitForm: React.FC = () => {
     }
 
     return (
-        <form onSubmit={submitForm} className={`w-[80%] h-fit md:w-200 md:p-10 rounded-md flex flex-col gap-y-4 items-center justify-center h-40  focus-within:ring-3 shadow-accent focus-within:shadow-md ring-accent  focus:ring bg-transparent opacity-90  `}>
+        <form onSubmit={submitForm} className={`w-[80%] h-fit md:w-200 md:p-10 rounded-md flex flex-col gap-y-4 items-center justify-center  focus-within:ring-3 shadow-accent focus-within:shadow-md ring-accent  focus:ring bg-transparent opacity-90  `}>
             <legend className="sm:text-3xl text-primary mb-10 text-shadow-lg">Git Auto Changelog</legend>
             <div className=" md:w-full grid grid-cols-10  rounded-xl  shadow-secondary shadow-md focus-within:shadow-lg">
                 <input disabled={isFetching} type="text" value={gitURL} onChange={(e) => setGitURL(e.target.value)} placeholder="Insert Git URL..."

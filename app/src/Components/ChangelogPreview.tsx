@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 const ChangelogPreview = () => {
     const {changelog} = useGitContext();
     return (
-        <div className={`w-80 md:w-200 md:text-lg max-h-80 scroll p-4 overflow-hidden mx-auto my-6 prose prose-sm border-4 border-accent rounded-sm   ${changelog ? 'opacity-100' : 'opacity-0'} overflow-y-auto`}
+        <div className={`w-80 md:w-7xl md:h-[100%] md:text-lg max-w-7xl max-h-[50vh] scroll p-4 overflow-hidden mx-auto my-6 prose prose-sm border-4 border-accent rounded-sm   ${changelog ? 'opacity-100' : 'opacity-0'} overflow-y-auto`}
         >
             <Markdown skipHtml remarkPlugins={[remarkGfm]}>{changelog}</Markdown>
         </div>
